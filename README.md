@@ -1,5 +1,10 @@
 # gedcom-occurrences
 
+**Version:** 0.2.0
+
+> ⚠️ **Breaking Change in v0.2.0**: This extension now uses a container-only model. 
+> See [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for upgrade instructions.
+
 This repository contains proposed [FamilySearch GEDCOM](https://gedcom.io/specs/) extensions
 for representing independent events that involve multiple participants with specific roles.
 
@@ -30,28 +35,30 @@ With the Occurrence Extension (hybrid compatibility):
 2 TAG _PART https://gedcom.io/terms/v7/_PART
 2 TAG _OCREF https://gedcom.io/terms/v7/_OCREF
 
-0 @O1@ _OCUR              # Shared occurrence (authoritative)
+0 @O1@ _OCUR              # Shared occurrence (event data only)
 1 TYPE Census
 1 DATE 1850
 1 PLAC Boston
-1 _PART @I1@
-2 ROLE Head
-1 _PART @I2@
-2 ROLE Spouse
+1 _PART @I1@             # Simple reference
+1 _PART @I2@             # Simple reference
 
-0 @I1@ INDI               # Individual view (compatible)
+0 @I1@ INDI
 1 NAME John /Smith/
-1 CENS
-2 DATE 1850             # Matches OCUR
-2 PLAC Boston            # Matches OCUR
-2 _OCREF @O1@            # Points to shared occurrence
+1 _OCREF @O1@            # Reference to shared occurrence
+2 ROLE Head              # Participant data here
+2 AGE 45y                # Participant data here
+1 CENS                   # For backward compatibility
+2 DATE 1850
+2 PLAC Boston
 
 0 @I2@ INDI
 1 NAME Mary /Smith/
-1 CENS
-2 DATE 1850             # Matches OCUR
-2 PLAC Boston            # Matches OCUR
-2 _OCREF @O1@            # Points to shared occurrence
+1 _OCREF @O1@            # Reference to shared occurrence  
+2 ROLE Spouse            # Participant data here
+2 AGE 42y                # Participant data here
+1 CENS                   # For backward compatibility
+2 DATE 1850
+2 PLAC Boston
 ```
 
 ## Extensions
