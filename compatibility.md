@@ -20,12 +20,12 @@ This document explains how to map between the Occurrence extension (_OCUR) and s
 
 ## Compatibility Strategies
 
-### Strategy 1: Dual Export (Recommended)
+### Strategy 1: Hybrid Approach (Recommended)
 
-Export both OCUR records and traditional EVEN structures:
+Enhance existing event structures with occurrence references:
 
 ```gedcom
-# Modern: Occurrence record
+# The authoritative occurrence
 0 @O1@ _OCUR
 1 TYPE Census
 1 DATE 5 JUN 1850
@@ -38,35 +38,33 @@ Export both OCUR records and traditional EVEN structures:
 2 AGE 42y
 1 SOUR @S1@
 
-# Legacy: Embedded events for compatibility
+# Individual event views (compatible with legacy)
 0 @I1@ INDI
 1 NAME John /Smith/
-1 EVEN
-2 TYPE Census
-2 DATE 5 JUN 1850
-2 PLAC Boston, Massachusetts
-2 AGE 45y
-2 NOTE Head of household. Also enumerated: Mary Smith (spouse, age 42)
-2 SOUR @S1@
-1 _OCREF @O1@     # Extension (ignored by legacy systems)
-2 ROLE Head
+1 CENS
+2 DATE 5 JUN 1850      # Matches OCUR (required)
+2 PLAC Boston, Massachusetts # Matches OCUR (required)
+2 AGE 45y               # Person-specific (allowed)
+2 NOTE Head of household # Person-specific (allowed)
+2 _OCREF @O1@          # Extension: points to authority
 
 0 @I2@ INDI
 1 NAME Mary /Smith/
-1 EVEN
-2 TYPE Census
-2 DATE 5 JUN 1850
-2 PLAC Boston, Massachusetts
-2 AGE 42y
-2 NOTE Enumerated with John Smith (head, age 45)
-2 SOUR @S1@
-1 ASSO @I1@
-2 RELA Census with
-1 _OCREF @O1@
-2 ROLE Spouse
+1 CENS
+2 DATE 5 JUN 1850      # Matches OCUR (required)
+2 PLAC Boston, Massachusetts # Matches OCUR (required)
+2 AGE 42y               # Person-specific (allowed)
+2 NOTE Wife of head     # Person-specific (allowed)
+2 _OCREF @O1@          # Extension: points to authority
 ```
 
-### Strategy 2: Export Conversion
+**Benefits**:
+- **Legacy systems**: See normal census events, work perfectly
+- **Extension systems**: Use OCUR as authoritative source
+- **No duplication**: Shared data exists once in OCUR
+- **User-friendly**: No mysterious duplicate events
+
+### Strategy 2: Pure Extension (Alternative)
 
 #### OCUR → EVEN Algorithm
 
@@ -94,11 +92,8 @@ def ocur_to_even(ocur, participants):
         even.PLAC = place
         even.AGE = age
         
-        # Add note about other participants
-        other_parts = [p for p in all_participants if p[0] != person_id]
-        if other_parts:
-            note = format_participant_note(other_parts)
-            even.NOTE = note
+        # Add occurrence reference
+        even._OCREF = ocur.id
         
         # Copy sources
         for source in sources:
@@ -120,7 +115,7 @@ def ocur_to_even(ocur, participants):
     return events
 ```
 
-### Strategy 3: Import Conversion
+### Strategy 3: Legacy Import Conversion
 
 #### EVEN → OCUR Algorithm
 
@@ -285,6 +280,29 @@ Census is the classic shared event:
 1 _OCREF @O3@
 ```
 
+## Authority and Conflict Resolution
+
+### Data Authority Rules
+1. **OCUR is authoritative** for shared attributes (DATE, PLAC, TYPE)
+2. **Embedded events** are "person's view" and can add person-specific data
+3. **Conflicts**: If embedded event contradicts OCUR, OCUR takes precedence
+4. **Validation**: Tools should warn about conflicts
+
+### What Can Be Different
+```gedcom
+0 @O1@ _OCUR
+1 DATE 5 JUN 1850        # Authoritative
+1 PLAC Boston            # Authoritative
+
+0 @I1@ INDI
+1 CENS
+2 DATE 5 JUN 1850        # Must match OCUR
+2 PLAC Boston            # Must match OCUR
+2 AGE 45y                # OK: person-specific
+2 NOTE Head of household # OK: person-specific
+2 _OCREF @O1@
+```
+
 ## Best Practices
 
 ### 1. When to Use OCUR
@@ -293,11 +311,11 @@ Census is the classic shared event:
 - Group events (immigration, military service)
 - Complex events with many roles
 
-### 2. When to Keep EVEN
-- Single-person events (birth, death)
-- Simple facts without other participants
-- Events where roles don't matter
-- Maximum compatibility needed
+### 2. Implementation Strategy
+- **Start with hybrid**: Both OCUR and embedded events
+- **Legacy support**: Ensure embedded events work standalone
+- **Validation**: Check OCUR/embedded consistency
+- **Migration path**: Eventually drop embedded events when ecosystem ready
 
 ### 3. Source Citation
 - Place sources on OCUR when shared

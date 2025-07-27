@@ -235,20 +235,26 @@ event_ref.role = "Witness"
 ### Backward Compatibility
 
 For systems that don't understand the extension:
-1. Include traditional embedded events (EVEN) for primary participant
-2. Add NOTE explaining other participants
-3. Use ASSO for basic relationships
+1. Include traditional embedded events that match the OCUR data
+2. The _OCREF is simply ignored by legacy systems
+3. Legacy systems see normal, working events
 
 ```gedcom
-0 @I1@ INDI
-1 CENS                    # Traditional embedded
-2 DATE 5 JUN 1850
-2 PLAC Boston
-2 NOTE Also present: Mary Smith (spouse), etc.
-1 ASSO @I2@
-2 RELA Spouse at census
-1 _OCREF @O1@             # Extended version
+0 @O1@ _OCUR              # Extension: shared occurrence
+1 TYPE Census
+1 DATE 5 JUN 1850
+1 PLAC Boston
+1 _PART @I1@
 2 ROLE Head
+1 _PART @I2@
+2 ROLE Spouse
+
+0 @I1@ INDI
+1 CENS                    # Legacy: person's view
+2 DATE 5 JUN 1850         # Must match OCUR
+2 PLAC Boston             # Must match OCUR
+2 AGE 45y                 # Person-specific OK
+2 _OCREF @O1@             # Extension (ignored by legacy)
 ```
 
 ## Benefits

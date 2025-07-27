@@ -22,7 +22,7 @@ Traditional GEDCOM duplicates shared events:
 2 PLAC Boston
 ```
 
-With the Occurrence Extension:
+With the Occurrence Extension (hybrid compatibility):
 ```gedcom
 0 HEAD
 1 SCHMA
@@ -30,7 +30,7 @@ With the Occurrence Extension:
 2 TAG _PART https://gedcom.io/terms/v7/_PART
 2 TAG _OCREF https://gedcom.io/terms/v7/_OCREF
 
-0 @O1@ _OCUR
+0 @O1@ _OCUR              # Shared occurrence (authoritative)
 1 TYPE Census
 1 DATE 1850
 1 PLAC Boston
@@ -39,15 +39,19 @@ With the Occurrence Extension:
 1 _PART @I2@
 2 ROLE Spouse
 
-0 @I1@ INDI
+0 @I1@ INDI               # Individual view (compatible)
 1 NAME John /Smith/
-1 _OCREF @O1@
-2 ROLE Head
+1 CENS
+2 DATE 1850             # Matches OCUR
+2 PLAC Boston            # Matches OCUR
+2 _OCREF @O1@            # Points to shared occurrence
 
 0 @I2@ INDI
 1 NAME Mary /Smith/
-1 _OCREF @O1@
-2 ROLE Spouse
+1 CENS
+2 DATE 1850             # Matches OCUR
+2 PLAC Boston            # Matches OCUR
+2 _OCREF @O1@            # Points to shared occurrence
 ```
 
 ## Extensions

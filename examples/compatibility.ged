@@ -5,7 +5,7 @@
 2 TAG _OCUR https://gedcom.io/terms/v7/_OCUR
 2 TAG _PART https://gedcom.io/terms/v7/_PART
 2 TAG _OCREF https://gedcom.io/terms/v7/_OCREF
-1 NOTE This file demonstrates backward compatibility
+1 NOTE This file demonstrates backward compatibility using hybrid approach
 
 0 @O1@ _OCUR
 1 TYPE Census
@@ -26,12 +26,8 @@
 2 DATE 5 JUN 1850
 2 PLAC Boston, Suffolk, Massachusetts, USA
 2 AGE 45y
-2 NOTE Head of household. Also enumerated: Mary Smith (spouse, age 42)
-2 SOUR @S1@
-1 ASSO @I2@
-2 RELA Spouse at census
-1 _OCREF @O1@
-2 ROLE Head
+2 NOTE Head of household
+2 _OCREF @O1@
 
 0 @I2@ INDI
 1 NAME Mary /Smith/
@@ -40,12 +36,8 @@
 2 DATE 5 JUN 1850
 2 PLAC Boston, Suffolk, Massachusetts, USA
 2 AGE 42y
-2 NOTE Enumerated with John Smith (head, age 45)
-2 SOUR @S1@
-1 ASSO @I1@
-2 RELA Spouse at census
-1 _OCREF @O1@
-2 ROLE Spouse
+2 NOTE Wife of head
+2 _OCREF @O1@
 
 0 @S1@ SOUR
 1 TITL 1850 United States Federal Census
