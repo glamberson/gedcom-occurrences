@@ -1,0 +1,46 @@
+0 HEAD
+1 GEDC
+2 VERS 7.0
+1 SCHMA
+2 TAG _OCUR https://gedcom.io/terms/v7/_OCUR
+2 TAG _PART https://gedcom.io/terms/v7/_PART
+2 TAG _OCREF https://gedcom.io/terms/v7/_OCREF
+
+0 @O1@ _OCUR
+1 TYPE Census
+1 DATE 5 JUN 1850
+1 PLAC Boston, Suffolk, Massachusetts, USA
+1 _PART @I1@
+2 ROLE Head
+2 AGE 45y
+1 _PART @I2@
+2 ROLE Spouse
+2 AGE 42y
+1 _PART @I3@
+2 ROLE Child
+2 AGE 12y
+1 SOUR @S1@
+
+0 @I1@ INDI
+1 NAME John /Smith/
+1 SEX M
+1 _OCREF @O1@
+2 ROLE Head
+
+0 @I2@ INDI
+1 NAME Mary /Smith/
+1 SEX F
+1 _OCREF @O1@
+2 ROLE Spouse
+
+0 @I3@ INDI
+1 NAME Robert /Smith/
+1 SEX M
+1 _OCREF @O1@
+2 ROLE Child
+
+0 @S1@ SOUR
+1 TITL 1850 United States Federal Census
+1 PUBL Ancestry.com
+
+0 TRLR

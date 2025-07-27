@@ -1,0 +1,42 @@
+%YAML 1.2
+---
+lang: en-US
+
+type: structure
+
+uri: https://gedcom.io/terms/v7/_OCREF
+
+standard tag: _OCREF
+
+specification:
+  - Occurrence Reference
+  - |
+    An _OCREF structure creates a reference from an individual or family
+    to an occurrence record (_OCUR). This allows people to indicate
+    their participation in shared occurrences.
+    
+    The payload is a pointer to the _OCUR record. The substructures can
+    provide participant-specific information that may differ from or
+    supplement the information in the _OCUR._PART structure.
+    
+    When both _OCREF and _OCUR._PART contain the same type of
+    information (such as ROLE or AGE), the _OCREF takes precedence
+    as it represents the perspective of the individual/family.
+
+label: 'Occurrence Reference'
+
+payload: "@<XREF:_OCUR>@"
+
+substructures:
+  "https://gedcom.io/terms/v7/ROLE": "{0:1}"
+  "https://gedcom.io/terms/v7/AGE": "{0:1}"
+  "https://gedcom.io/terms/v7/NOTE": "{0:M}"
+  "https://gedcom.io/terms/v7/SNOTE": "{0:M}"
+  "https://gedcom.io/terms/v7/SOUR": "{0:M}"
+
+superstructures:
+  "https://gedcom.io/terms/v7/record-INDI": "{0:M}"
+  "https://gedcom.io/terms/v7/record-FAM": "{0:M}"
+
+contact: "https://github.com/genealogy-ai/gedcom-extensions"
+...

@@ -1,0 +1,114 @@
+0 HEAD
+1 GEDC
+2 VERS 7.0
+1 SCHMA
+2 TAG _OCUR https://gedcom.io/terms/v7/_OCUR
+2 TAG _PART https://gedcom.io/terms/v7/_PART
+2 TAG _OCREF https://gedcom.io/terms/v7/_OCREF
+
+0 @O1@ _OCUR
+1 TYPE Marriage
+1 DATE 14 FEB 1848
+1 PLAC St. Mary's Church, Boston, Massachusetts
+1 _PART @I1@
+2 ROLE Groom
+2 AGE 43y
+1 _PART @I2@
+2 ROLE Bride
+2 AGE 40y
+1 _PART @I3@
+2 ROLE Witness
+2 NOTE Best man and brother of groom
+1 _PART @I4@
+2 ROLE Witness
+2 NOTE Maid of honor and sister of bride
+1 _PART @I5@
+2 ROLE Officiator
+2 NOTE Rev. James Wilson
+1 SOUR @S1@
+
+0 @O2@ _OCUR
+1 TYPE Burial
+1 DATE 18 NOV 1918
+1 PLAC Flanders Field, Belgium
+1 NOTE Mass grave for influenza pandemic victims
+1 _PART @I6@
+2 ROLE Principal
+2 AGE 19y
+2 NOTE Pvt. Thomas Brown, 42nd Infantry
+1 _PART @I7@
+2 ROLE Principal
+2 AGE 22y
+2 NOTE Pvt. William Green, 42nd Infantry
+1 _PART @I8@
+2 ROLE Principal
+2 AGE 24y
+2 NOTE Cpl. James White, 42nd Infantry
+1 SOUR @S2@
+
+0 @I1@ INDI
+1 NAME John /Smith/
+1 SEX M
+1 _OCREF @O1@
+2 ROLE Groom
+
+0 @I2@ INDI
+1 NAME Mary /Jones/
+1 SEX F
+1 _OCREF @O1@
+2 ROLE Bride
+
+0 @I3@ INDI
+1 NAME Robert /Smith/
+1 SEX M
+1 _OCREF @O1@
+2 ROLE Witness
+
+0 @I4@ INDI
+1 NAME Elizabeth /Jones/
+1 SEX F
+1 _OCREF @O1@
+2 ROLE Witness
+
+0 @I5@ INDI
+1 NAME James /Wilson/
+1 SEX M
+1 _OCREF @O1@
+2 ROLE Officiator
+
+0 @I6@ INDI
+1 NAME Thomas /Brown/
+1 SEX M
+1 _OCREF @O2@
+2 ROLE Principal
+
+0 @I7@ INDI
+1 NAME William /Green/
+1 SEX M
+1 _OCREF @O2@
+2 ROLE Principal
+
+0 @I8@ INDI
+1 NAME James /White/
+1 SEX M
+1 _OCREF @O2@
+2 ROLE Principal
+
+0 @F1@ FAM
+1 HUSB @I1@
+1 WIFE @I2@
+1 _OCREF @O1@
+2 NOTE Marriage occurrence for this family
+
+0 @S1@ SOUR
+1 TITL St. Mary's Church Marriage Register
+1 PUBL Boston Archdiocese
+1 DATE 1848
+2 PHRASE Volume 3, Page 45
+
+0 @S2@ SOUR
+1 TITL American Battle Monuments Commission
+1 PUBL US Government
+1 NOTE Flanders Field American Cemetery records
+
+0 TRLR

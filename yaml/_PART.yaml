@@ -1,0 +1,39 @@
+%YAML 1.2
+---
+lang: en-US
+
+type: structure
+
+uri: https://gedcom.io/terms/v7/_PART
+
+standard tag: _PART
+
+specification:
+  - Occurrence Participant
+  - |
+    A _PART structure identifies a participant in an occurrence (_OCUR),
+    along with their role and other participation-specific information.
+    
+    The payload is a pointer to either an individual (INDI) or family (FAM)
+    record that participated in the occurrence. The ROLE substructure should
+    indicate how they participated.
+    
+    Common roles include: Principal, Witness, Officiator, Bride, Groom,
+    Child, Parent, Godparent, Informant, Beneficiary, and Heir.
+
+label: 'Occurrence Participant'
+
+payload: "@<XREF:INDI>@ | @<XREF:FAM>@"
+
+substructures:
+  "https://gedcom.io/terms/v7/ROLE": "{0:1}"
+  "https://gedcom.io/terms/v7/AGE": "{0:1}"
+  "https://gedcom.io/terms/v7/NOTE": "{0:M}"
+  "https://gedcom.io/terms/v7/SNOTE": "{0:M}"
+  "https://gedcom.io/terms/v7/SOUR": "{0:M}"
+
+superstructures:
+  "https://gedcom.io/terms/v7/_OCUR": "{0:M}"
+
+contact: "https://github.com/genealogy-ai/gedcom-extensions"
+...
