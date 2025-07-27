@@ -15,13 +15,13 @@ specification:
     to an occurrence record (_OCUR). This allows people to indicate
     their participation in shared occurrences.
     
-    The payload is a pointer to the _OCUR record. The substructures can
-    provide participant-specific information that may differ from or
-    supplement the information in the _OCUR._PART structure.
+    The payload is a pointer to the _OCUR record. All participant-specific
+    information (role, age, notes, sources) is stored here with the
+    individual or family, following the container-only model.
     
-    When both _OCREF and _OCUR._PART contain the same type of
-    information (such as ROLE or AGE), the _OCREF takes precedence
-    as it represents the perspective of the individual/family.
+    This design matches the GRAMPS EventRef pattern where the event
+    contains only event data, and participation details are stored
+    with the participant.
 
 label: 'Occurrence Reference'
 
@@ -33,10 +33,12 @@ substructures:
   "https://gedcom.io/terms/v7/NOTE": "{0:M}"
   "https://gedcom.io/terms/v7/SNOTE": "{0:M}"
   "https://gedcom.io/terms/v7/SOUR": "{0:M}"
+  "_ATTR": "{0:M}"  # For additional participant-specific attributes
+  "_PRESENCE": "{0:1}"  # For partial participation (Present|Absent|Unknown)
 
 superstructures:
   "https://gedcom.io/terms/v7/record-INDI": "{0:M}"
   "https://gedcom.io/terms/v7/record-FAM": "{0:M}"
 
-contact: "https://github.com/genealogy-ai/gedcom-extensions"
+contact: "https://github.com/glamberson/gedcom-occurrences"
 ...
