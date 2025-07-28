@@ -94,7 +94,9 @@ with the corresponding URI prefix
 
 ## Status
 
-**Draft** - Seeking community feedback
+**Published** - v0.2.0 released
+
+**Registry Submission** - Submitted to [GEDCOM Registry PR #173](https://github.com/FamilySearch/GEDCOM-registries/pull/173)
 
 ## See Also
 
@@ -103,3 +105,4 @@ with the corresponding URI prefix
 - [Compatibility Guide](compatibility.md)
 - [Examples](examples/)
 - [YAML Definitions](yaml/)
+- [Registry-Compliant YAML](registry-yaml/)
