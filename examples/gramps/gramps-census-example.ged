@@ -1,0 +1,272 @@
+##############################################################################
+# GRAMPS Census Example with GEDCOM 7 Extensions
+# 
+# This example demonstrates how three GEDCOM 7 extensions work together
+# to handle a typical GRAMPS workflow: documenting a family from a census
+# 
+# Extensions used:
+# 1. gedcom-citations (dthaler) - Template-based source citations
+# 2. gedcom-occurrences (ours) - Shared event records
+# 3. gedcom-evidence (ours) - Evidence containers
+##############################################################################
+
+0 HEAD
+1 GEDC
+2 VERS 7.0
+1 SCHMA
+2 TAG _TMPLT https://github.com/dthaler/gedcom-citations
+2 TAG _FIEL https://github.com/dthaler/gedcom-citations
+2 TAG _OCUR https://github.com/glamberson/gedcom-occurrences
+2 TAG _OCREF https://github.com/glamberson/gedcom-occurrences
+2 TAG _PART https://github.com/glamberson/gedcom-occurrences
+2 TAG _EVID https://github.com/glamberson/gedcom-evidence
+2 TAG _FIND https://github.com/glamberson/gedcom-evidence
+2 TAG _CONF https://github.com/glamberson/gedcom-evidence
+
+##############################################################################
+# STEP 1: Define the Census Source with Citation Template
+# This matches GRAMPS' source templates for census records
+##############################################################################
+
+0 @S1@ SOUR
+1 TITL 1850 U.S. Federal Census
+1 _TMPLT Census                              # Using dthaler's citation template
+2 _FIEL Year
+3 TEXT 1850
+2 _FIEL Jurisdiction
+3 TEXT Worcester County, Massachusetts
+2 _FIEL Enumeration District
+3 TEXT District 3
+2 _FIEL Page
+3 TEXT 247
+2 _FIEL Line
+3 TEXT 15-18
+2 _FIEL Repository
+3 TEXT National Archives and Records Administration
+2 _FIEL Roll
+3 TEXT M432_345
+1 NOTE GRAMPS Source Template: U.S. Federal Census
+1 REPO @R1@
+
+0 @R1@ REPO
+1 NAME National Archives and Records Administration
+1 ADDR
+2 ADR1 700 Pennsylvania Avenue NW
+2 CITY Washington
+2 STAE DC
+2 POST 20408
+2 CTRY USA
+
+##############################################################################
+# STEP 2: Evidence Extracted from the Census
+# These map to GRAMPS "personas" or evidence fragments
+##############################################################################
+
+# Evidence for head of household
+0 @E1@ _EVID
+1 _ID John Smith (census)
+1 _FIND John Smith, 42, farmer, born Ohio
+1 SOUR @S1@
+2 PAGE Line 15
+2 NOTE Clear handwriting, age appears certain
+1 _RDOC @M1@                                 # Link to census image
+
+# Evidence for wife
+0 @E2@ _EVID
+1 _ID Mary Smith (census)
+1 _FIND Mary Smith, 38, keeping house, born Pennsylvania
+1 SOUR @S1@
+2 PAGE Line 15
+2 NOTE Relationship to head not stated but position implies wife
+
+# Evidence for son
+0 @E3@ _EVID
+1 _ID James Smith (census)
+1 _FIND James Smith, 15, attending school, born Massachusetts
+1 SOUR @S1@
+2 PAGE Line 16
+2 NOTE Listed as son in relationship column
+
+# Evidence for daughter
+0 @E4@ _EVID
+1 _ID Sarah Smith (census)
+1 _FIND Sarah Smith, 12, attending school, born Massachusetts
+1 SOUR @S1@
+2 PAGE Line 17
+2 NOTE Listed as daughter in relationship column
+
+##############################################################################
+# STEP 3: The Shared Census Event (GRAMPS Event Object)
+# This represents the census enumeration as a single event
+##############################################################################
+
+0 @O1@ _OCUR                                # GRAMPS Event object
+1 TYPE Census
+2 PHRASE 1850 U.S. Federal Census
+1 DATE 15 AUG 1850
+1 PLAC Worcester, Worcester County, Massachusetts, USA
+2 FORM Town, County, State, Country
+1 SOUR @S1@                                 # Event-level citation
+1 NOTE Household of John Smith, farmer
+1 _PART @I1@                                # John Smith participated
+2 ROLE Head
+2 NOTE Age 42, farmer, born Ohio
+2 SOUR @S1@
+3 PAGE Line 15
+1 _PART @I2@                                # Mary Smith participated
+2 ROLE Member
+2 NOTE Age 38, keeping house, born Pennsylvania
+2 SOUR @S1@
+3 PAGE Line 15
+1 _PART @I3@                                # James Smith participated
+2 ROLE Member
+2 NOTE Age 15, son, attending school
+2 SOUR @S1@
+3 PAGE Line 16
+1 _PART @I4@                                # Sarah Smith participated
+2 ROLE Member
+2 NOTE Age 12, daughter, attending school
+2 SOUR @S1@
+3 PAGE Line 17
+
+##############################################################################
+# STEP 4: Individual Records (GRAMPS Person Objects)
+# These connect to both evidence and the shared event
+##############################################################################
+
+# John Smith - Head of Household
+0 @I1@ INDI
+1 NAME John /Smith/
+2 TYPE Birth
+2 _EVID @E1@                                # Link to census evidence
+3 _CONF Medium                             # Confidence in this connection
+1 SEX M
+1 BIRT
+2 DATE CAL ABT 1808                        # Calculated from age 42 in 1850
+2 PLAC Ohio, USA
+2 NOTE Age given as 42 in 1850 census
+2 SOUR @S1@
+3 PAGE Line 15
+3 NOTE "John Smith, 42, farmer, born Ohio"
+1 OCCU Farmer
+2 DATE 1850
+2 SOUR @S1@
+1 _OCREF @O1@                              # Reference to shared census event
+2 ROLE Head
+1 FAMS @F1@
+
+# Mary Smith - Wife
+0 @I2@ INDI
+1 NAME Mary /Smith/
+2 TYPE Birth
+2 NPFX Mrs.
+2 _EVID @E2@
+3 _CONF Medium
+1 SEX F
+1 BIRT
+2 DATE CAL ABT 1812
+2 PLAC Pennsylvania, USA
+2 NOTE Age given as 38 in 1850 census
+2 SOUR @S1@
+3 PAGE Line 15
+1 _OCREF @O1@
+2 ROLE Member
+2 NOTE Listed immediately after head, position implies wife
+1 FAMS @F1@
+
+# James Smith - Son
+0 @I3@ INDI
+1 NAME James /Smith/
+2 TYPE Birth
+2 _EVID @E3@
+3 _CONF High                               # Relationship explicitly stated
+1 SEX M
+1 BIRT
+2 DATE CAL ABT 1835
+2 PLAC Massachusetts, USA
+2 NOTE Age 15 in 1850 census
+2 SOUR @S1@
+3 PAGE Line 16
+1 _OCREF @O1@
+2 ROLE Member
+2 NOTE Son of head
+1 RESI
+2 DATE 1850
+2 PLAC Worcester, Massachusetts, USA
+2 NOTE Attending school
+2 SOUR @S1@
+1 FAMC @F1@
+
+# Sarah Smith - Daughter
+0 @I4@ INDI
+1 NAME Sarah /Smith/
+2 TYPE Birth
+2 _EVID @E4@
+3 _CONF High
+1 SEX F
+1 BIRT
+2 DATE CAL ABT 1838
+2 PLAC Massachusetts, USA
+2 NOTE Age 12 in 1850 census
+2 SOUR @S1@
+3 PAGE Line 17
+1 _OCREF @O1@
+2 ROLE Member
+2 NOTE Daughter of head
+1 RESI
+2 DATE 1850
+2 PLAC Worcester, Massachusetts, USA
+2 NOTE Attending school
+2 SOUR @S1@
+1 FAMC @F1@
+
+##############################################################################
+# STEP 5: Family Record
+# Links the individuals together based on census evidence
+##############################################################################
+
+0 @F1@ FAM
+1 HUSB @I1@
+1 WIFE @I2@
+1 CHIL @I3@
+1 CHIL @I4@
+1 MARR
+2 DATE BEF 1835
+2 NOTE Marriage inferred from eldest child's birth
+2 SOUR @S1@
+3 PAGE Lines 15-17
+3 NOTE Family enumerated together in 1850 census
+1 NOTE Smith family as enumerated in 1850 census, Worcester, MA
+
+##############################################################################
+# STEP 6: Media (Census Image)
+# GRAMPS stores media references for source documents
+##############################################################################
+
+0 @M1@ OBJE
+1 FILE /path/to/census/1850-census-worcester-p247.jpg
+2 FORM jpeg
+2 TITL 1850 Census - Worcester County, MA - Page 247
+1 NOTE Page showing Smith family enumeration
+1 SOUR @S1@
+
+##############################################################################
+# How This Maps to GRAMPS
+#
+# 1. Source (@S1@) = GRAMPS Source with census template
+# 2. Evidence (@E1-E4@) = GRAMPS personas/evidence fragments
+# 3. Occurrence (@O1@) = GRAMPS Event object (shared census)
+# 4. Individuals (@I1-I4@) = GRAMPS Person objects
+# 5. _OCREF = GRAMPS EventRef (person's participation in event)
+# 6. Family (@F1@) = GRAMPS Family object
+# 7. Media (@M1@) = GRAMPS Media object
+#
+# Benefits:
+# - No duplicate census data (one shared event)
+# - Evidence trail preserved (what the source actually says)
+# - Professional citations using templates
+# - Each person's role in the event is documented
+# - Confidence levels track certainty of connections
+##############################################################################
+
+0 TRLR
