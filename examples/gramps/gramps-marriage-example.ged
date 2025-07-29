@@ -1,0 +1,370 @@
+##############################################################################
+# GRAMPS Marriage Example with Multiple Ceremonies
+# 
+# Demonstrates GRAMPS' event independence model where a single marriage
+# might have multiple related events (civil ceremony, religious ceremony,
+# celebration) that need to be tracked separately but linked
+#
+# Extensions used:
+# 1. gedcom-occurrences - For independent event records
+# 2. gedcom-citations - For source templates
+# 3. gedcom-evidence - For documenting what sources actually say
+##############################################################################
+
+0 HEAD
+1 GEDC
+2 VERS 7.0
+1 SCHMA
+2 TAG _TMPLT https://github.com/dthaler/gedcom-citations
+2 TAG _FIEL https://github.com/dthaler/gedcom-citations
+2 TAG _OCUR https://github.com/glamberson/gedcom-occurrences
+2 TAG _OCREF https://github.com/glamberson/gedcom-occurrences
+2 TAG _PART https://github.com/glamberson/gedcom-occurrences
+2 TAG _EVID https://github.com/glamberson/gedcom-evidence
+2 TAG _FIND https://github.com/glamberson/gedcom-evidence
+
+##############################################################################
+# Sources with Citation Templates
+##############################################################################
+
+# Civil Registration
+0 @S1@ SOUR
+1 TITL Hampshire County Registry Office Marriage Register
+1 _TMPLT Civil Registration
+2 _FIEL Type
+3 TEXT Marriage
+2 _FIEL Year
+3 TEXT 1875
+2 _FIEL Registry
+3 TEXT Winchester
+2 _FIEL Volume
+3 TEXT 2c
+2 _FIEL Page
+3 TEXT 847
+1 REPO @R1@
+
+# Church Register
+0 @S2@ SOUR
+1 TITL St. Mary's Church Parish Register
+1 _TMPLT Church Record
+2 _FIEL Church
+3 TEXT St. Mary's Church
+2 _FIEL Location
+3 TEXT Winchester, Hampshire
+2 _FIEL Record Type
+3 TEXT Marriages
+2 _FIEL Year
+3 TEXT 1875
+2 _FIEL Page
+3 TEXT 42
+1 REPO @R2@
+
+# Newspaper
+0 @S3@ SOUR
+1 TITL Hampshire Chronicle
+1 _TMPLT Newspaper
+2 _FIEL Paper
+3 TEXT Hampshire Chronicle
+2 _FIEL Date
+3 TEXT 15 May 1875
+2 _FIEL Page
+3 TEXT 5
+2 _FIEL Column
+3 TEXT 3
+1 REPO @R3@
+
+##############################################################################
+# Evidence from Sources
+##############################################################################
+
+# Civil registration evidence
+0 @E1@ _EVID
+1 _FIND William Thompson, 28, bachelor, engineer, son of James Thompson
+1 _FIND married Elizabeth Brown, 25, spinster, daughter of Robert Brown
+1 _FIND Date: 12 May 1875, Winchester Registry Office
+1 SOUR @S1@
+2 PAGE Entry 847
+1 NOTE Witnesses: James Thompson, Mary Brown
+
+# Church register evidence
+0 @E2@ _EVID
+1 _FIND William Thompson of this parish and Elizabeth Brown of this parish
+1 _FIND were married in this church by banns this thirteenth day of May
+1 _FIND in the year 1875 by me, John Smith, Vicar
+1 SOUR @S2@
+2 PAGE Page 42
+1 NOTE Witnesses: James Thompson, Robert Brown, Mary Brown, Sarah Thompson
+
+# Newspaper announcement
+0 @E3@ _EVID
+1 _FIND THOMPSON-BROWN - On the 12th inst., at Winchester Registry Office,
+1 _FIND and afterwards at St. Mary's Church, William Thompson, Esq., 
+1 _FIND engineer, eldest son of Mr. James Thompson of London, to Elizabeth,
+1 _FIND eldest daughter of Mr. Robert Brown of Winchester. Reception at
+1 _FIND the Crown Hotel.
+1 SOUR @S3@
+2 PAGE Page 5, Column 3
+
+##############################################################################
+# Independent Event Records (GRAMPS Event Objects)
+##############################################################################
+
+# Civil Marriage Ceremony
+0 @O1@ _OCUR
+1 TYPE Marriage
+2 PHRASE Civil Marriage
+1 DATE 12 MAY 1875
+1 TIME 11:00
+1 PLAC Winchester Registry Office, Winchester, Hampshire, England
+1 SOUR @S1@
+2 PAGE Entry 847
+1 NOTE Legal marriage ceremony
+1 _PART @I1@                                # William Thompson
+2 ROLE Groom
+2 AGE 28y
+2 NOTE Listed as bachelor, engineer
+1 _PART @I2@                                # Elizabeth Brown
+2 ROLE Bride  
+2 AGE 25y
+2 NOTE Listed as spinster
+1 _PART @I3@                                # James Thompson (witness)
+2 ROLE Witness
+2 NOTE Father of groom
+1 _PART @I4@                                # Mary Brown (witness)
+2 ROLE Witness
+2 NOTE Sister of bride
+
+# Religious Marriage Ceremony
+0 @O2@ _OCUR
+1 TYPE Marriage
+2 PHRASE Religious Marriage
+1 DATE 13 MAY 1875
+1 TIME 14:00
+1 PLAC St. Mary's Church, Winchester, Hampshire, England
+1 SOUR @S2@
+2 PAGE Page 42
+1 RELI Anglican
+1 NOTE Church blessing following civil ceremony
+1 _PART @I1@
+2 ROLE Groom
+1 _PART @I2@
+2 ROLE Bride
+1 _PART @I3@
+2 ROLE Witness
+1 _PART @I5@                                # Robert Brown
+2 ROLE Witness
+2 NOTE Father of bride
+1 _PART @I4@
+2 ROLE Witness
+1 _PART @I6@                                # Sarah Thompson
+2 ROLE Witness
+2 NOTE Sister of groom
+1 _PART @I7@                                # Rev. John Smith
+2 ROLE Officiant
+2 NOTE Vicar of St. Mary's
+
+# Wedding Reception
+0 @O3@ _OCUR
+1 TYPE Wedding
+2 PHRASE Wedding Reception
+1 DATE 13 MAY 1875
+1 TIME 16:00
+1 PLAC Crown Hotel, Winchester, Hampshire, England
+1 SOUR @S3@
+1 NOTE Reception following church ceremony
+1 _PART @I1@
+2 ROLE Groom
+1 _PART @I2@
+2 ROLE Bride
+1 _PART @I3@
+2 ROLE Guest
+2 NOTE Father of groom, gave toast
+1 _PART @I5@
+2 ROLE Guest
+2 NOTE Father of bride, gave toast
+
+##############################################################################
+# Individuals with References to Events
+##############################################################################
+
+# Groom
+0 @I1@ INDI
+1 NAME William /Thompson/
+2 _EVID @E1@
+2 _EVID @E2@
+2 _EVID @E3@
+1 SEX M
+1 BIRT
+2 DATE CAL 1847
+2 PLAC London, England
+2 NOTE Age 28 at marriage in 1875
+1 OCCU Engineer
+2 DATE 1875
+2 SOUR @S1@
+1 _OCREF @O1@                              # Civil ceremony
+2 ROLE Groom
+1 _OCREF @O2@                              # Religious ceremony
+2 ROLE Groom
+1 _OCREF @O3@                              # Reception
+2 ROLE Groom
+1 FAMS @F1@
+
+# Bride
+0 @I2@ INDI
+1 NAME Elizabeth /Brown/
+2 TYPE Birth
+2 _EVID @E1@
+2 _EVID @E2@
+2 _EVID @E3@
+1 NAME Elizabeth /Thompson/
+2 TYPE Married
+2 DATE FROM 12 MAY 1875
+1 SEX F
+1 BIRT
+2 DATE CAL 1850
+2 PLAC Winchester, Hampshire, England
+2 NOTE Age 25 at marriage in 1875
+1 _OCREF @O1@
+2 ROLE Bride
+1 _OCREF @O2@
+2 ROLE Bride
+1 _OCREF @O3@
+2 ROLE Bride
+1 FAMS @F1@
+
+# Father of Groom
+0 @I3@ INDI
+1 NAME James /Thompson/
+1 SEX M
+1 RESI
+2 DATE 1875
+2 PLAC London, England
+1 _OCREF @O1@
+2 ROLE Witness
+2 NOTE Father of groom
+1 _OCREF @O2@
+2 ROLE Witness
+1 _OCREF @O3@
+2 ROLE Guest
+2 NOTE Gave toast for the couple
+1 FAMS @F2@
+
+# Sister of Bride
+0 @I4@ INDI
+1 NAME Mary /Brown/
+1 SEX F
+1 _OCREF @O1@
+2 ROLE Witness
+2 NOTE Sister of bride
+1 _OCREF @O2@
+2 ROLE Witness
+1 FAMC @F3@
+
+# Father of Bride
+0 @I5@ INDI
+1 NAME Robert /Brown/
+1 SEX M
+1 RESI
+2 DATE 1875
+2 PLAC Winchester, Hampshire, England
+1 _OCREF @O2@
+2 ROLE Witness
+2 NOTE Father of bride
+1 _OCREF @O3@
+2 ROLE Guest
+2 NOTE Gave toast for the couple
+1 FAMS @F3@
+
+# Sister of Groom
+0 @I6@ INDI
+1 NAME Sarah /Thompson/
+1 SEX F
+1 _OCREF @O2@
+2 ROLE Witness
+2 NOTE Sister of groom
+1 FAMC @F2@
+
+# Officiating Minister
+0 @I7@ INDI
+1 NAME Rev. John /Smith/
+1 TITL Reverend
+1 SEX M
+1 OCCU Vicar
+2 PLAC St. Mary's Church, Winchester
+2 DATE 1875
+1 _OCREF @O2@
+2 ROLE Officiant
+2 NOTE Performed religious ceremony
+
+##############################################################################
+# Families
+##############################################################################
+
+# The New Family
+0 @F1@ FAM
+1 HUSB @I1@
+1 WIFE @I2@
+1 MARR
+2 DATE 12 MAY 1875                         # Legal date (civil ceremony)
+2 PLAC Winchester, Hampshire, England
+2 TYPE Civil
+2 SOUR @S1@
+3 PAGE Entry 847
+1 NOTE This family established by civil marriage on 12 May 1875,
+2 CONT religious blessing on 13 May 1875
+
+# Groom's Parents
+0 @F2@ FAM
+1 HUSB @I3@
+1 CHIL @I1@
+1 CHIL @I6@
+
+# Bride's Parents  
+0 @F3@ FAM
+1 HUSB @I5@
+1 CHIL @I2@
+1 CHIL @I4@
+
+##############################################################################
+# Repositories
+##############################################################################
+
+0 @R1@ REPO
+1 NAME General Register Office
+1 ADDR
+2 CITY Winchester
+2 STAE Hampshire
+2 CTRY England
+
+0 @R2@ REPO
+1 NAME St. Mary's Church Archives
+1 ADDR
+2 CITY Winchester
+2 STAE Hampshire
+2 CTRY England
+
+0 @R3@ REPO
+1 NAME British Newspaper Archive
+1 ADDR
+2 CITY Boston Spa
+2 STAE West Yorkshire
+2 CTRY England
+
+##############################################################################
+# GRAMPS Benefits Demonstrated:
+#
+# 1. Event Independence: Three separate events for one marriage
+# 2. Multiple Participants: Different people at different events
+# 3. Role Specificity: Each person's role at each event
+# 4. Timeline Preservation: Exact sequence of events
+# 5. Source Linkage: Each event has its own source
+# 6. No Data Duplication: Events referenced, not embedded
+#
+# Without gedcom-occurrences extension:
+# - Would need to duplicate marriage data in each person
+# - Could only record one marriage event
+# - Would lose participant information
+# - Timeline would be unclear
+##############################################################################
+
+0 TRLR
