@@ -109,6 +109,55 @@ substructures:
   SOUR: "{0:M}"   # Sources for participation
 ```
 
+#### `_ATTR` - Custom Attribute
+```yaml
+tag: _ATTR
+uri: https://gedcom.io/terms/v7/_ATTR
+type: structure
+payload: "string"  # Attribute name
+substructures:
+  _VALUE: "{1:1}"  # Attribute value (required)
+  NOTE: "{0:M}"    # Notes about this attribute
+superstructures: ["_OCUR", "_OCREF"]
+```
+
+The `_ATTR` structure provides a generic key-value mechanism for storing custom attributes that aren't covered by standard GEDCOM structures. This ensures data preservation during import/export cycles between different genealogy applications.
+
+**Usage Examples:**
+```gedcom
+# Census-specific attributes
+0 @O1@ _OCUR
+1 TYPE Census
+1 DATE 1850
+1 _ATTR Schedule_Type
+2 _VALUE Population
+1 _ATTR Enumeration_District  
+2 _VALUE 15
+1 _ATTR Page_Number
+2 _VALUE 42B
+
+# Military service attributes
+0 @O2@ _OCUR
+1 TYPE Military Service
+1 _ATTR Service_Number
+2 _VALUE 123456
+1 _ATTR Rank
+2 _VALUE Private First Class
+1 _ATTR Unit
+2 _VALUE 101st Airborne Division
+```
+
+#### `_VALUE` - Attribute Value
+```yaml
+tag: _VALUE
+uri: https://gedcom.io/terms/v7/_VALUE
+type: structure
+payload: "string"  # The attribute value
+superstructures: ["_ATTR"]
+```
+
+The `_VALUE` structure contains the value for a custom attribute defined by `_ATTR`. It is always required when using `_ATTR`.
+
 ### Role Vocabulary
 
 Based on GEDCOM X and GRAMPS:
